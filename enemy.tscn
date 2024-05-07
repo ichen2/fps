@@ -1,23 +1,51 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8q36ptlnkiuo"]
+[gd_scene load_steps=9 format=3 uid="uid://c8q36ptlnkiuo"]
 
 [ext_resource type="Script" path="res://enemy.gd" id="1_5utko"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_4ppiq"]
-size = Vector3(1, 2, 1)
+size = Vector3(2, 2, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p7bi3"]
-albedo_color = Color(1, 0, 0, 1)
+albedo_color = Color(0, 0.506127, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_as1n2"]
 material = SubResource("StandardMaterial3D_p7bi3")
-size = Vector3(1, 2, 1)
+size = Vector3(0.5, 0.5, 0.5)
 
-[node name="Enemy" type="RigidBody3D"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pq58o"]
+albedo_color = Color(0.429966, 0.194377, 8.86528e-08, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_dymm8"]
+material = SubResource("StandardMaterial3D_pq58o")
+size = Vector3(1, 1.5, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hnn7e"]
+albedo_color = Color(0, 0.505882, 0, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ssp8p"]
+material = SubResource("StandardMaterial3D_hnn7e")
+size = Vector3(0.5, 0.5, 1)
+
+[node name="Enemy" type="CharacterBody3D" groups=["enemies"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1, 2.08165e-12)
 script = ExtResource("1_5utko")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("BoxShape3D_4ppiq")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="CollisionShape3D"]
+[node name="Head" type="MeshInstance3D" parent="CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 0.75, 0.25)
 mesh = SubResource("BoxMesh_as1n2")
+
+[node name="Body" type="MeshInstance3D" parent="CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -0.25, 0.25)
+mesh = SubResource("BoxMesh_dymm8")
+skeleton = NodePath("../Head")
+
+[node name="LeftArm" type="MeshInstance3D" parent="CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0.25, 2.08165e-12)
+mesh = SubResource("BoxMesh_ssp8p")
+
+[node name="RightArm" type="MeshInstance3D" parent="CollisionShape3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.25, 2.08165e-12)
+mesh = SubResource("BoxMesh_ssp8p")

@@ -1,5 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://74kbqqp1qnmo"]
+[gd_scene load_steps=12 format=3 uid="uid://74kbqqp1qnmo"]
 
+[ext_resource type="Script" path="res://main.gd" id="1_lfdm5"]
 [ext_resource type="PackedScene" uid="uid://h5iboqg6gn0v" path="res://player.tscn" id="1_ym338"]
 [ext_resource type="PackedScene" uid="uid://c8q36ptlnkiuo" path="res://enemy.tscn" id="2_3q2tf"]
 
@@ -19,7 +20,22 @@ albedo_color = Color(0, 1, 0, 1)
 material = SubResource("StandardMaterial3D_wpi31")
 size = Vector3(2, 2, 2)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l6n37"]
+albedo_color = Color(0.996895, 0.413964, 9.93014e-07, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_j4mhg"]
+material = SubResource("StandardMaterial3D_l6n37")
+
+[sub_resource type="Curve3D" id="Curve3D_fv3vm"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 39.6765, 1.369, 39.8929, 0, 0, 0, 0, 0, 0, -39.5674, 1.66412, 39.7487, 0, 0, 0, 0, 0, 0, -40.7148, -1.40725, -41.0006, 0, 0, 0, 0, 0, 0, 41.159, -1.72969, -41.3119, 0, 0, 0, 0, 0, 0, 39.6765, 1.369, 39.8929),
+"tilts": PackedFloat32Array(0, 0, 0, 0, 0)
+}
+point_count = 5
+
 [node name="Main" type="Node3D"]
+script = ExtResource("1_lfdm5")
+mob_scene = ExtResource("2_3q2tf")
 
 [node name="Ground" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, -0.5, 2.08165e-12)
@@ -30,27 +46,47 @@ shape = SubResource("BoxShape3D_4m3yu")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Ground"]
 mesh = SubResource("BoxMesh_x18kh")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="Light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.820571, 0.571545, 0, -0.571545, 0.820571, 0, 27, 0)
 shadow_enabled = true
 
 [node name="Player" parent="." instance=ExtResource("1_ym338")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.22272e-05, 0.993817, -0.000166893)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1, 2.08165e-12)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
+[node name="Box" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 1, 0)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Box"]
 shape = SubResource("BoxShape3D_rmsxj")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="StaticBody3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Box"]
 mesh = SubResource("BoxMesh_acgbp")
 
-[node name="Enemy" parent="." instance=ExtResource("2_3q2tf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08165e-12, 1, 7)
+[node name="SpawnPoints" type="Node3D" parent="."]
 
-[node name="Enemy2" parent="." instance=ExtResource("2_3q2tf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1, 14)
+[node name="SpawnPoint" type="MeshInstance3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 1, 40)
+mesh = SubResource("BoxMesh_j4mhg")
 
-[node name="Enemy3" parent="." instance=ExtResource("2_3q2tf")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 1, 21)
+[node name="SpawnPoint2" type="MeshInstance3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 1, 40)
+mesh = SubResource("BoxMesh_j4mhg")
+
+[node name="SpawnPoint3" type="MeshInstance3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -40, 1, -40)
+mesh = SubResource("BoxMesh_j4mhg")
+
+[node name="SpawnPoint4" type="MeshInstance3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 40, 1, -40)
+mesh = SubResource("BoxMesh_j4mhg")
+
+[node name="SpawnPath" type="Path3D" parent="."]
+curve = SubResource("Curve3D_fv3vm")
+
+[node name="SpawnLocation" type="PathFollow3D" parent="SpawnPath"]
+transform = Transform3D(0.0018198, 0.00372416, 0.999991, -2.32831e-10, 0.999993, -0.00372417, -0.999998, 6.77702e-06, 0.00181979, 39.6765, 1.369, 39.8929)
+
+[node name="Timer" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
